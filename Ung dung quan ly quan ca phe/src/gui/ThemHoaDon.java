@@ -1,0 +1,698 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package gui;
+
+import dao.CTHDDiemTamDAO;
+import dao.CTHDThucUongDAO;
+import dao.DatHangDTDAO;
+import dao.DatHangTUDAO;
+import dao.SQLServerProvider;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import pojo.CTHDDT;
+import pojo.CTHDTU;
+import pojo.DatHangDT;
+import pojo.DatHangTU;
+
+/**
+ *
+ * @author Admin
+ */
+public class ThemHoaDon extends javax.swing.JDialog {
+
+    /**
+     * Creates new form ThemHoaDon
+     */
+    Statement stament;
+    ResultSet rs;
+    SQLServerProvider provider;
+    DefaultTableModel model;
+    Connection connection;
+    CallableStatement cs;
+    
+    ArrayList<DatHangTU> dsTU;
+    ArrayList<DatHangDT> dsDT;
+    
+    public static String maTU;
+    public static String tenTU;
+    public static String maDT;
+    public static String tenDT;
+    public static int soLuongTU;
+    public static int soLuongDT;
+    public static int tongTU = 0;
+    public static int tongDT = 0;
+    
+    public ThemHoaDon(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        //load thức uống
+        model = new DefaultTableModel();
+        model.addColumn("ID");
+        model.addColumn("Tên");
+        model.addColumn("Số lượng");
+        model.addColumn("Đơn giá");
+        tbTU.setModel(model);
+        loadTU();
+        // load điểm tâm
+        model = new DefaultTableModel();
+        model.addColumn("ID");
+        model.addColumn("Tên");
+        model.addColumn("Số lượng");
+        model.addColumn("Đơn giá");
+        tbDT.setModel(model);
+        loadDT();
+        ketnoiCSDL();
+    }
+    public void loadTU()
+    {
+        DefaultTableModel dtm = (DefaultTableModel) tbTU.getModel();        
+        dsTU = DatHangTUDAO.layDsTU();
+        dtm.setRowCount(0);
+        tbTU.setModel(dtm);
+        for(DatHangTU tu : dsTU)
+        {
+            Vector<Object> vec = new Vector<Object>();
+            vec.add(tu.getMaTU());
+            vec.add(tu.getTenTU());
+            vec.add(tu.getSoLuong());
+            vec.add(tu.getDonGia());
+            dtm.addRow(vec);
+        }
+        tbTU.setModel(dtm);
+    }
+    public void loadDT()
+    {
+        DefaultTableModel dtm = (DefaultTableModel) tbDT.getModel();       
+        dsDT = DatHangDTDAO.layDsDiemTam();
+        dtm.setRowCount(0);
+        tbDT.setModel(dtm);
+        for(DatHangDT dt : dsDT)
+        {
+            Vector<Object> vec = new Vector<Object>();
+            vec.add(dt.getMaDT());
+            vec.add(dt.getTenDT());
+            vec.add(dt.getSoLuong());
+            vec.add(dt.getDonGia());
+            dtm.addRow(vec);
+        }
+        tbDT.setModel(dtm);
+    }
+    public void ketnoiCSDL(){
+        String server = "LAPTOP-1LO8U7LN\\SQLEXPRESS";
+        String user ="sa";
+        String password = "nguyen114814";
+        String databasename = "DEAN_JAVA";
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://"+server
+                    + ":1433;databaseName="+databasename
+                    +";user="+user
+                    +";password="+password;
+            connection = DriverManager.getConnection(url);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+    }
+    private void ThemSanPhamTU(String ma, String ten, int soluong, int dongia)
+    {
+        DefaultTableModel tablemo = (DefaultTableModel) tbThongTinTU.getModel();
+        Vector<Object> vec = new Vector<Object>();
+        int a = tbThongTinTU.getRowCount() + 1;
+        int b = soluong*dongia;
+        vec.add(a);
+        vec.add(QuanLy_CaPhe.maHoaDon.toString());
+        vec.add(ma);
+        vec.add(ten);
+        vec.add(soluong);
+        vec.add(dongia);
+        vec.add(b);
+        tablemo.addRow(vec);
+    }
+    private void ThemSanPhamDT(String ma, String ten, int soluong, int dongia)
+    {
+        DefaultTableModel tablemo = (DefaultTableModel) tbThongTinDT.getModel();
+        Vector<Object> vec = new Vector<Object>();
+        int a = tbThongTinDT.getRowCount() + 1;
+        int b = soluong*dongia;
+        vec.add(a);
+        vec.add(QuanLy_CaPhe.maHoaDon.toString());
+        vec.add(ma);
+        vec.add(ten);
+        vec.add(soluong);
+        vec.add(dongia);
+        vec.add(b);
+        tablemo.addRow(vec);
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        pnDatHang = new javax.swing.JPanel();
+        btnTinhTienDT = new javax.swing.JButton();
+        btnLamMoiDT = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        lbThanhTienDT = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tbDT = new javax.swing.JTable();
+        btnXoaDT = new javax.swing.JButton();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tbThongTinDT = new javax.swing.JTable();
+        pnDatHang1 = new javax.swing.JPanel();
+        btnTinhTienTU = new javax.swing.JButton();
+        btnLamMoiTU = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        lbThanhTienTU = new javax.swing.JLabel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tbTU = new javax.swing.JTable();
+        btnXoaTU = new javax.swing.JButton();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        tbThongTinTU = new javax.swing.JTable();
+        btnXong = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        btnTinhTienDT.setText("Tính tiền");
+        btnTinhTienDT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTinhTienDTActionPerformed(evt);
+            }
+        });
+
+        btnLamMoiDT.setText("Làm mới");
+        btnLamMoiDT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLamMoiDTActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Thành tiền:");
+
+        lbThanhTienDT.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lbThanhTienDT.setForeground(new java.awt.Color(255, 51, 51));
+        lbThanhTienDT.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbThanhTienDT.setText("0");
+
+        jScrollPane6.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane6.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        tbDT.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tbDT.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbDTMouseClicked(evt);
+            }
+        });
+        jScrollPane6.setViewportView(tbDT);
+
+        btnXoaDT.setText("Xóa");
+        btnXoaDT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaDTActionPerformed(evt);
+            }
+        });
+
+        jScrollPane7.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane7.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        tbThongTinDT.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Mã hóa đơn", "Mã", "Tên", "Số lượng", "Đơn giá", "Thành tiền"
+            }
+        ));
+        jScrollPane7.setViewportView(tbThongTinDT);
+
+        javax.swing.GroupLayout pnDatHangLayout = new javax.swing.GroupLayout(pnDatHang);
+        pnDatHang.setLayout(pnDatHangLayout);
+        pnDatHangLayout.setHorizontalGroup(
+            pnDatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnDatHangLayout.createSequentialGroup()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane7))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnDatHangLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnDatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnDatHangLayout.createSequentialGroup()
+                        .addComponent(btnTinhTienDT)
+                        .addGap(61, 61, 61)
+                        .addComponent(btnXoaDT, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(btnLamMoiDT)
+                        .addGap(66, 66, 66))
+                    .addGroup(pnDatHangLayout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addGap(57, 57, 57)
+                        .addComponent(lbThanhTienDT, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(170, 170, 170))))
+        );
+        pnDatHangLayout.setVerticalGroup(
+            pnDatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnDatHangLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnDatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnDatHangLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(pnDatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTinhTienDT)
+                    .addComponent(btnXoaDT)
+                    .addComponent(btnLamMoiDT))
+                .addGap(18, 18, 18)
+                .addGroup(pnDatHangLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(lbThanhTienDT))
+                .addGap(33, 33, 33))
+        );
+
+        btnTinhTienTU.setText("Tính tiền");
+        btnTinhTienTU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTinhTienTUActionPerformed(evt);
+            }
+        });
+
+        btnLamMoiTU.setText("Làm mới");
+        btnLamMoiTU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLamMoiTUActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setText("Thành tiền:");
+
+        lbThanhTienTU.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        lbThanhTienTU.setForeground(new java.awt.Color(255, 51, 51));
+        lbThanhTienTU.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbThanhTienTU.setText("0");
+
+        jScrollPane8.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane8.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        tbTU.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tbTU.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbTUMouseClicked(evt);
+            }
+        });
+        jScrollPane8.setViewportView(tbTU);
+
+        btnXoaTU.setText("Xóa");
+        btnXoaTU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaTUActionPerformed(evt);
+            }
+        });
+
+        jScrollPane9.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane9.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        tbThongTinTU.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Mã hóa đơn", "Mã", "Tên", "Số lượng", "Đơn giá", "Thành tiền"
+            }
+        ));
+        jScrollPane9.setViewportView(tbThongTinTU);
+
+        javax.swing.GroupLayout pnDatHang1Layout = new javax.swing.GroupLayout(pnDatHang1);
+        pnDatHang1.setLayout(pnDatHang1Layout);
+        pnDatHang1Layout.setHorizontalGroup(
+            pnDatHang1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnDatHang1Layout.createSequentialGroup()
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnDatHang1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnDatHang1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnDatHang1Layout.createSequentialGroup()
+                        .addComponent(btnTinhTienTU)
+                        .addGap(61, 61, 61)
+                        .addComponent(btnXoaTU, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(btnLamMoiTU)
+                        .addGap(66, 66, 66))
+                    .addGroup(pnDatHang1Layout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addGap(57, 57, 57)
+                        .addComponent(lbThanhTienTU, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(170, 170, 170))))
+        );
+        pnDatHang1Layout.setVerticalGroup(
+            pnDatHang1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnDatHang1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnDatHang1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnDatHang1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(pnDatHang1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTinhTienTU)
+                    .addComponent(btnXoaTU)
+                    .addComponent(btnLamMoiTU))
+                .addGap(18, 18, 18)
+                .addGroup(pnDatHang1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(lbThanhTienTU))
+                .addContainerGap())
+        );
+
+        btnXong.setText("Xong");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnDatHang1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnDatHang, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(332, 332, 332)
+                .addComponent(btnXong, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(pnDatHang1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(pnDatHang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnXong)
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnTinhTienDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTinhTienDTActionPerformed
+        // TODO add your handling code here:
+        for(int i = 0; i<tbThongTinDT.getRowCount() ; i++)
+        {
+            int a = Integer.parseInt(tbThongTinDT.getValueAt(i, 6).toString());
+            tongDT += a;
+        }
+        lbThanhTienDT.setText(String.valueOf(tongDT));
+        for(int i = 0; i<tbThongTinDT.getRowCount() ; i++)
+        {
+            CTHDDT dt = new CTHDDT();
+            dt.setMaHD(tbThongTinDT.getValueAt(i, 1).toString());
+            dt.setMaDT(tbThongTinDT.getValueAt(i, 2).toString());
+            dt.setSoLuongDT(Integer.parseInt(tbThongTinDT.getValueAt(i, 4).toString()));
+            dt.setThanhTienDT(Integer.parseInt(tbThongTinDT.getValueAt(i, 6).toString()));
+            boolean kq = CTHDDiemTamDAO.themCTHDDT(dt);
+            if(kq)
+            {
+                System.out.println("Đã thêm");
+            }
+            else
+            {
+                System.out.println("Thêm thất bại");
+            }
+        }        
+        JOptionPane.showMessageDialog(null, "Dữ liệu đã được cập nhật vào bảng","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+        return;
+        
+    }//GEN-LAST:event_btnTinhTienDTActionPerformed
+
+    private void btnLamMoiDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiDTActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            SQLServerProvider provider = new SQLServerProvider();
+            provider.Open();
+            for(int i = 0 ; i<tbThongTinDT.getRowCount(); i++)
+            {
+                cs = connection.prepareCall("{call TRUDISOLUONGDT(?,?)}");
+                cs.setString(1, tbThongTinDT.getValueAt(i, 2).toString());
+                cs.setInt(2, Integer.parseInt(tbThongTinDT.getValueAt(i, 4).toString()));
+                int n = cs.executeUpdate();
+                if(n>0)
+                {
+                   System.out.println(n);
+                }
+            }
+            provider.Close();
+            DefaultTableModel tablemo = (DefaultTableModel) tbThongTinDT.getModel();
+            tablemo.setRowCount(0);
+            tbThongTinDT.setModel(tablemo);
+            DefaultTableModel dtm = (DefaultTableModel) tbDT.getModel();
+            dtm.setRowCount(0);
+            tbDT.setModel(dtm);
+            loadDT();
+        } catch (SQLException ex) {
+            Logger.getLogger(QuanLy_CaPhe.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnLamMoiDTActionPerformed
+
+    private void tbDTMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDTMouseClicked
+        // TODO add your handling code here:
+        if(tbDT.getSelectedRow() == -1)
+        {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 dòng để thêm vào hóa đơn","Lỗi",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if(evt.getClickCount()>=2)
+        {
+            int r = tbDT.getSelectedRow();
+            maDT = tbDT.getValueAt(r, 0).toString();
+            tenDT = tbDT.getValueAt(r, 1).toString();
+            soLuongDT = Integer.parseInt(tbDT.getValueAt(r, 2).toString());
+            TuyChonHoaDonDT a = new TuyChonHoaDonDT(null, true);
+            a.setVisible(true);
+            String ten = tbDT.getValueAt(r, 1).toString();
+            int dg;
+
+            dg = Integer.parseInt(tbDT.getValueAt(r, 3).toString());
+            ThemSanPhamDT(maDT, ten, soLuongDT, dg);
+        }
+    }//GEN-LAST:event_tbDTMouseClicked
+
+    private void btnXoaDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaDTActionPerformed
+        // TODO add your handling code here:
+        if(tbThongTinDT.getSelectedRow() == - 1)
+        {
+            JOptionPane.showMessageDialog(null, "Hãy chọn 1 dòng để xóa","Lỗi",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        else
+        {
+            int a = tbThongTinDT.getSelectedRow();
+            DefaultTableModel tablemo = (DefaultTableModel) tbThongTinDT.getModel();
+            tablemo.removeRow(a);
+            tbThongTinDT.setModel(tablemo);
+        }
+    }//GEN-LAST:event_btnXoaDTActionPerformed
+
+    private void btnTinhTienTUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTinhTienTUActionPerformed
+        // TODO add your handling code here:
+        for(int i = 0; i<tbThongTinTU.getRowCount() ; i++)
+        {
+            int a = Integer.parseInt(tbThongTinTU.getValueAt(i, 6).toString());
+            tongTU += a;
+        }
+        lbThanhTienTU.setText(String.valueOf(tongTU));
+        
+        for(int i = 0; i<tbThongTinTU.getRowCount() ; i++)
+        {
+            CTHDTU tu = new CTHDTU();
+            tu.setMaHD(tbThongTinTU.getValueAt(i, 1).toString());
+            tu.setMaTU(tbThongTinTU.getValueAt(i, 2).toString());
+            tu.setSoLuongTU(Integer.parseInt(tbThongTinTU.getValueAt(i, 4).toString()));
+            tu.setThanhTienTU(Integer.parseInt(tbThongTinTU.getValueAt(i, 6).toString()));
+            boolean kq = CTHDThucUongDAO.themCTHDTU(tu);
+            if(kq)
+            {
+                System.out.println("Đã thêm");
+            }
+            else
+            {
+                System.out.println("Thêm thất bại");
+            }
+        }      
+        JOptionPane.showMessageDialog(null, "Dữ liệu đã được cập nhật vào bảng","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+        return;        
+    }//GEN-LAST:event_btnTinhTienTUActionPerformed
+
+    private void btnLamMoiTUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiTUActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            SQLServerProvider provider = new SQLServerProvider();
+            provider.Open();
+            for(int i = 0 ; i<tbThongTinTU.getRowCount(); i++)
+            {
+                cs = connection.prepareCall("{call TRUDISOLUONGTU(?,?)}");
+                cs.setString(1, tbThongTinTU.getValueAt(i, 2).toString());
+                cs.setInt(2, Integer.parseInt(tbThongTinTU.getValueAt(i, 4).toString()));
+                int n = cs.executeUpdate();
+                if(n>0)
+                {
+                    System.out.println(n);
+                }
+            }
+            provider.Close();
+            DefaultTableModel tablemo = (DefaultTableModel) tbThongTinTU.getModel();
+            tablemo.setRowCount(0);
+            tbThongTinTU.setModel(tablemo);
+            DefaultTableModel dtm = (DefaultTableModel) tbTU.getModel();
+            dtm.setRowCount(0);
+            tbTU.setModel(dtm);
+            loadTU();
+        } catch (SQLException ex) {
+            Logger.getLogger(QuanLy_CaPhe.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnLamMoiTUActionPerformed
+
+    private void tbTUMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbTUMouseClicked
+        // TODO add your handling code here:
+        if(tbTU.getSelectedRow() == -1)
+        {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 dòng để thêm vào hóa đơn","Lỗi",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if(evt.getClickCount()>=2)
+        {
+            int r = tbTU.getSelectedRow();
+            maTU = tbTU.getValueAt(r, 0).toString();
+            tenTU = tbTU.getValueAt(r, 1).toString();
+            soLuongTU = Integer.parseInt(tbTU.getValueAt(r, 2).toString());
+            TuyChonHoaDonTU a = new TuyChonHoaDonTU(null, true);
+            a.setVisible(true);
+            String ten = tbTU.getValueAt(r, 1).toString();
+            int dg;
+
+            dg = Integer.parseInt(tbTU.getValueAt(r, 3).toString());
+            ThemSanPhamTU(maTU, ten, soLuongTU, dg);
+        }
+    }//GEN-LAST:event_tbTUMouseClicked
+
+    private void btnXoaTUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaTUActionPerformed
+        // TODO add your handling code here:
+        if(tbThongTinTU.getSelectedRow() == - 1)
+        {
+            JOptionPane.showMessageDialog(null, "Hãy chọn 1 dòng để xóa","Lỗi",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        else
+        {
+            int a = tbThongTinTU.getSelectedRow();
+            DefaultTableModel tablemo = (DefaultTableModel) tbThongTinTU.getModel();
+            tablemo.removeRow(a);
+            tbThongTinTU.setModel(tablemo);
+        }
+    }//GEN-LAST:event_btnXoaTUActionPerformed
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ThemHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ThemHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ThemHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ThemHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ThemHoaDon dialog = new ThemHoaDon(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLamMoiDT;
+    private javax.swing.JButton btnLamMoiTU;
+    private javax.swing.JButton btnTinhTienDT;
+    private javax.swing.JButton btnTinhTienTU;
+    private javax.swing.JButton btnXoaDT;
+    private javax.swing.JButton btnXoaTU;
+    private javax.swing.JButton btnXong;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JLabel lbThanhTienDT;
+    private javax.swing.JLabel lbThanhTienTU;
+    private javax.swing.JPanel pnDatHang;
+    private javax.swing.JPanel pnDatHang1;
+    private javax.swing.JTable tbDT;
+    private javax.swing.JTable tbTU;
+    private javax.swing.JTable tbThongTinDT;
+    private javax.swing.JTable tbThongTinTU;
+    // End of variables declaration//GEN-END:variables
+}
